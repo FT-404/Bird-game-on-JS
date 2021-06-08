@@ -1,0 +1,129 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    cursor: default;
+    -webkit-user-select: none;
+    /* user-select -- это нестандартное свойство */
+
+    -moz-user-select: none;
+    /* поэтому нужны префиксы */
+
+    -ms-user-select: none;
+}
+
+.pricel {
+    cursor: url('../img/pricel.png'), crosshair;
+}
+
+.canvas {
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../img/bg.png");
+}
+
+.bird {
+    width: 110px;/*5.5%*/;
+    height: 48px;/*4.4%*/;
+    /*background-image: url("../img/bird2.png");*/
+    /*animation: fly 30s linear;*/
+    margin-left: -110px;
+}
+
+.fly {
+    animation-name: fly;
+    animation-timing-function: linear;
+}
+
+@keyframes fly {
+    0% {
+        margin-left: -110px;
+    }
+    100% {
+        margin-left: 100vw;
+    }
+}
+
+.info {
+    width: 100vw;
+    height: 70px;
+    font-family: 'Alfa Slab One', cursive;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+    display: none;
+}
+
+.lives {
+    width: 132.42px;
+}
+
+.heart {
+    width: 40.96px;
+    height: 40.96px;
+}
+
+.score-div {
+    width: 132.42px;
+}
+
+.score {
+    font-size: 55px;
+}
+
+.timer {
+    font-size: 60px;
+}
+
+.res-btn {
+    display: none;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(0,0,0,0);
+    border: 3px solid #d2c014;
+    border-radius: 20px;
+    font-family: 'Alfa Slab One', cursive;
+    font-size: 50px;
+    padding: 5px 20px;
+    cursor: pointer;
+    margin-top: 50px;
+}
+
+.start-btn {
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(0,0,0,0);
+    border: 3px solid #d2c014;
+    border-radius: 20px;
+    font-family: 'Alfa Slab One', cursive;
+    font-size: 50px;
+    padding: 5px 20px;
+    display: block;
+    margin: auto;
+    margin-top: calc(50vh - 43px - 48px);
+    cursor: pointer;
+}
+
+.after-lose {
+    display: none;
+}
+
+.score-after-lose {
+    font-family: 'Alfa Slab One', cursive;
+    font-size: 60px;
+    text-align: center;
+    /*display: none;*/
+}
+
+.lose-message {
+    font-family: 'Alfa Slab One', cursive;
+    font-size: 60px;
+    text-align: center;
+    /*display: none;*/
+    padding-top: 300px;
+}
