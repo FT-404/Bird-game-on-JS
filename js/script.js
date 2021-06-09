@@ -1,9 +1,13 @@
 let bird = document.querySelector('.bird'),
+    boss = document.querySelector('.boss'),
     count = 1,
     count2 = 1,
     score = 0,
     timerCount = 2,
     countHearts = 2,
+    speed = 10,
+    speedup = 0,
+    oldspeed = 0,
     scoreEl = document.querySelector('.score'),
     timer = document.querySelector('.timer'),
     hearts = document.querySelectorAll('.heart'),
@@ -16,7 +20,7 @@ let bird = document.querySelector('.bird'),
     elem = document.documentElement,
     body = document.querySelector('body');
 
-/* Просмотр в полноэкранном режиме */
+// Просмотр в полноэкранном режиме
 function openFullscreen() {
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
@@ -29,7 +33,7 @@ function openFullscreen() {
     }
 }
 
-/* Закрыть полный экран */
+// Закрыть полный экран
 function closeFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -42,10 +46,7 @@ function closeFullscreen() {
     }
 }
 
-document.addEventListener('mousedown', () => {
-
-})
-
+// Запуск игры
 startBtn.addEventListener('click', () => {
     openFullscreen();
     startBtn.style.display = 'none';
@@ -54,9 +55,9 @@ startBtn.addEventListener('click', () => {
     scoreEl.textContent = score;
 })
 
+// Функция таймера
 function Timer () {
     let Timer = setInterval(() => {
-
         if (timerCount <= -2) {
             clearInterval(Timer);
             timer.style.display = 'none';
@@ -67,42 +68,38 @@ function Timer () {
         } else {
             timer.textContent = timerCount;
         }
-
         timerCount--;
     }, 1000)
 }
 
-
-
+// Функция рандомных значений по осям X и Y для птички
 function Rand () {
-    let randX = Math.floor(Math.random() * 10);
+    let randX = Math.floor(Math.random() * 7);
     let randY = Math.floor(Math.random() * 480);
     if (randX < 3) {
         randX = 3;
     }
-    // return randX;
     return {
         randX: randX,
         randY: randY
-    };
+    }
 }
 
+// Функция вылета птички
 function Starter() {
     body.classList.add('pricel');
-    // if (isBirdLeave == true) {
-    //     countHearts -= 1;
-    // }
-    // console.log(isBirdLeave);
     count = count2 = 1;
-    // bird.style.backgroundImage = null;
-    bird.style.animationDuration = Rand().randX + 's';
+    // speed = Rand().randX - speedup;
+    if (speed <= 1.75) {
+        speed = 1.75;
+    }
+    bird.style.animationDuration = speed + 's';
+    console.log(speed);
     bird.style.marginTop = Rand().randY + 'px';
     bird.classList.add('fly');
     setInterval(() => {
         // console.log(Math.floor(bird.getClientRects()[0]["x"]));
-
         if (Math.floor(bird.getClientRects()[0]["x"]) >= 50 * count) {
-            // bird.style.backgroundImage = 'url("img/anim.png")';
             bird.src = "img/anim.png";
             count += 2;
         }
@@ -111,17 +108,35 @@ function Starter() {
             bird.src = "img/bird2.png";
             count2++;
         }
-        // if (Math.floor(bird.getClientRects()[0]["x"]) >= screen.width - 20) {
-        //     hearts.forEach((i, index) => {
-        //         if (index == countHearts) {
-        //             isBirdLeave = true;
-        //             i.style.display = 'none';
-        //         }
-        //     })
-        // }
     }, 4)
 }
 
+// Функция птички-босса
+function Boss (bossScore, clicks) {
+    speed = 16;
+    boss.style.display = 'block';
+    boss.style.animationDuration = speed + 's';
+    console.log(speed);
+    boss.style.marginTop = Rand().randY + 'px';
+    boss.classList.add('fly');
+    console.log('Boss');
+
+    boss.addEventListener('click', () => {
+        bossScore++;
+        console.log('Score ', bossScore);
+        if (bossScore == clicks) {
+            console.log('hh');
+            boss.style.display = 'none';
+            boss.classList.remove('fly');
+            score += 10;
+            scoreEl.textContent = score;
+            speed = oldspeed;
+            Starter();
+        }
+    })
+}
+
+// Улетевшая птичка (минус одна жизнь)
 bird.addEventListener('animationend', () => {
 
     hearts.forEach((i, index) => {
@@ -134,7 +149,7 @@ bird.addEventListener('animationend', () => {
         info.style.display = 'none';
         afterLose.style.display = 'block';
         // loseMess.style.display = 'block';
-        loseMess.textContent = 'You lose (';
+        loseMess.textContent = 'You lose :(';
         resBtn.style.display = 'block';
         // scoreEl.style.display = 'none';
         // scoreAfterLose.style.display = 'block';
@@ -145,25 +160,45 @@ bird.addEventListener('animationend', () => {
         countHearts -= 1;
         bird.classList.remove('fly');
         setTimeout(() => {
-            Starter()
+            Starter();
         }, 4);
     }
 
 })
 
+// Попадание по птичке
 bird.addEventListener('mousedown', () => {
     score++;
+    speed -= 0.1;
+    // console.log(Rand().randX);
     scoreEl.textContent = score;
     bird.classList.remove('fly');
-    setTimeout(() => {
-        Starter()
-    }, 4);
+    switch (score) {
+        case 5:
+
+            oldspeed = speed;
+            boss.src = 'img/edik-boss.png';
+            Boss(0, 2);
+            break;
+        case 20:
+
+            oldspeed = speed;
+            boss.src = 'img/big-boss.png';
+            Boss(0, 4);
+            break;
+        default:
+            setTimeout(() => {
+                Starter();
+            }, 4);
+    }
 })
 
+// Перезапуск игры
 resBtn.addEventListener('click', () => {
     Restarter();
 })
 
+// Функция перезапуска
 function Restarter () {
     openFullscreen();
     info.style.display = 'flex';

@@ -34,6 +34,11 @@ body {
     margin-left: -110px;
 }
 
+.boss {
+    display: none;
+    margin-left: -220px;
+}
+
 .fly {
     animation-name: fly;
     animation-timing-function: linear;
