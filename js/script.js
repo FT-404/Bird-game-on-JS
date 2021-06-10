@@ -6,8 +6,12 @@ let bird = document.querySelector('.bird'),
     timerCount = 2,
     countHearts = 2,
     speed = 10,
-    speedup = 0,
+    mnoz = 0,
+    mnoz2 = 0,
     oldspeed = 0,
+    triggerBoss = 0,
+    triggerBigBoss = 0,
+    bossScore = 10,
     scoreEl = document.querySelector('.score'),
     timer = document.querySelector('.timer'),
     hearts = document.querySelectorAll('.heart'),
@@ -73,17 +77,25 @@ function Timer () {
 }
 
 // Функция рандомных значений по осям X и Y для птички
-function Rand () {
+function Rand (mnoz) {
     let randX = Math.floor(Math.random() * 7);
     let randY = Math.floor(Math.random() * 480);
+    let randBoss = Math.floor(Math.random() * 20) + 11 + mnoz;
+    let randBigBoss = Math.floor(Math.random() * 90) + 11 + mnoz;
+    let bossClicks = Math.floor(Math.random() * 5) + 1;
     if (randX < 3) {
         randX = 3;
     }
     return {
         randX: randX,
-        randY: randY
+        randY: randY,
+        randBoss: randBoss,
+        randBigBoss: randBigBoss,
+        bossClicks: bossClicks
     }
 }
+triggerBoss = Rand(mnoz).randBoss;
+console.log(triggerBoss);
 
 // Функция вылета птички
 function Starter() {
@@ -94,8 +106,7 @@ function Starter() {
         speed = 1.75;
     }
     bird.style.animationDuration = speed + 's';
-    console.log(speed);
-    bird.style.marginTop = Rand().randY + 'px';
+    bird.style.marginTop = Rand(0).randY + 'px';
     bird.classList.add('fly');
     setInterval(() => {
         // console.log(Math.floor(bird.getClientRects()[0]["x"]));
@@ -112,23 +123,33 @@ function Starter() {
 }
 
 // Функция птички-босса
-function Boss (bossScore, clicks) {
+function Boss (bossLives, clicks) {
     speed = 16;
     boss.style.display = 'block';
     boss.style.animationDuration = speed + 's';
-    console.log(speed);
-    boss.style.marginTop = Rand().randY + 'px';
+    boss.style.marginTop = Rand(0).randY + 'px';
     boss.classList.add('fly');
-    console.log('Boss');
 
     boss.addEventListener('click', () => {
-        bossScore++;
-        console.log('Score ', bossScore);
-        if (bossScore == clicks) {
-            console.log('hh');
+        bossLives++;
+        // console.log('Score ', bossLives);
+        if (bossLives == clicks) {
+            mnoz += 30;
+            mnoz2 += 100;
+            if (score == triggerBoss) {
+                triggerBoss = Rand(mnoz).randBoss;
+            }
+            // } else {
+            //     triggerBigBoss = Rand(mnoz2).randBigBoss;
+            // }
+            console.log(triggerBoss);
             boss.style.display = 'none';
             boss.classList.remove('fly');
-            score += 10;
+            score += bossScore;
+            bossScore += 5;
+            // if (triggerBoss >= score) {
+            //     triggerBoss = Rand(mnoz).randBoss;
+            // }
             scoreEl.textContent = score;
             speed = oldspeed;
             Starter();
@@ -148,11 +169,8 @@ bird.addEventListener('animationend', () => {
         bird.classList.remove('fly');
         info.style.display = 'none';
         afterLose.style.display = 'block';
-        // loseMess.style.display = 'block';
         loseMess.textContent = 'You lose :(';
         resBtn.style.display = 'block';
-        // scoreEl.style.display = 'none';
-        // scoreAfterLose.style.display = 'block';
         scoreAfterLose.textContent = 'Score: ' + score;
         afterLose.style.display= 'block';
         body.classList.remove('pricel');
@@ -173,23 +191,18 @@ bird.addEventListener('mousedown', () => {
     // console.log(Rand().randX);
     scoreEl.textContent = score;
     bird.classList.remove('fly');
-    switch (score) {
-        case 5:
-
-            oldspeed = speed;
-            boss.src = 'img/edik-boss.png';
-            Boss(0, 2);
-            break;
-        case 20:
-
-            oldspeed = speed;
-            boss.src = 'img/big-boss.png';
-            Boss(0, 4);
-            break;
-        default:
-            setTimeout(() => {
-                Starter();
-            }, 4);
+    if (score == triggerBoss) {
+        oldspeed = speed;
+        boss.src = 'img/edik-boss.png';
+        Boss(0, Rand().bossClicks);
+    // } else if (score == triggerBigBoss) {
+    //     oldspeed = speed;
+    //     boss.src = 'img/big-boss.png';
+    //     Boss(0, 4);
+    } else {
+        setTimeout(() => {
+            Starter();
+        }, 4);
     }
 })
 
